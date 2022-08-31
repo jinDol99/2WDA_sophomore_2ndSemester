@@ -3,7 +3,6 @@
 import java.util.*;
 
 public class ch01_220831_maximunNum {
-    }
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int max = sc.nextInt();
