@@ -5,69 +5,92 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vue js 첫 플</title>
+    <title>애완용품샵</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <!--https://getbootstrap.com/docs/5.2/getting-started/download/ 에서 가져온 스타일시트-->
+
+    <link href="assets/css/apps.css" rel="stylesheet" type="text/css">
+    <!--css 파일은 위 처럼 link 태그를 이용해 사용 가능함.-->
+    <!--이러한 스타일시트가 적용되어 있는 것을 크롬에서 보려면, 해당 구역을 우클릭하여 [검색] 메뉴를 클릭하면 됨.-->
+
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <!--https://v2.vuejs.org/v2/guide/#Getting-Started 참고-->
     <!-- V3이 업데이트 되었으나, 아직 대다수의 홈페이지에서는 V2 버전을 사용하기 때문에 수업도 V2 버전으로 진행 할 예정. -->
 </head>
 <body>
-    <div id="app">{{ message }}</div>
+    <div id="app">
+        <header>
+            <h1 v-text="sitename"></h1>
+            <!-- v-text - 텍스트의 속성을 나타냄. -->
+            <!-- 속성을 사용하지 않고 {{ 텍스트 }} 를 사용한 것과 비슷한 결과가 나옴-->
+            <!-- {{ }} 를 사용하는 것은 텍스트가 특정 변수에 따라 값이 변할 때 자주 사용되지만-->
+            <!-- 물론 v-text 속성을 사용하면서 '텍스트' + sitename 의 형식으로 사용 가능.-->
+            <main>
+                <div class="row product">
+                    <div class = "col">
+                        <figure>
+                            <img v-bind:src="product.image" alt="">
+                            <!--이미지 등을 외부에서 가져오지 않고, 다른 속성 같이 파일 내부에 주소값이 존재할 경우,-->
+                            <!--v-bind 속성을 이용해 "바인딩"을 할 수 있음.-->
+                            <!-- 여기서 v-bind 속성은 생략 하여 <img :src="product...> 처럼 사용도 가능-->
+                        </figure>
+                    </div>
+                    <div class="col col-expand">
+                        <h1 v-text="product.title"></h1>
+                        <p v-html="product.discription"></p>
+                        <p v-text="product.price"></p>
+                        <!-- 이미지가 아닌 텍스트를 바인딩 할때는 v-text 속성을 사용함-->
+                        <!-- 텍스트 뿐만 아니라 계산을 할 수 있는 계산식이나 함수도 가져올 수도 있지만,-->
+                        <!-- 이럴 경우 코드가 너무 길어져 유지보수가 힘들어지므로 권장하지는 않음.-->
+
+                        <!-- 만약 product.discription 처럼 안에 html용 태그가 있다면, v-html을 이용해 html 문법을 적용시킬 수 있음.-->
+                    </div>
+                </div>
+            </main>
+        </header>
+    </div>
     <!-- 빠르게 타이핑 하려명 div#app 으로 입력하면 됨-->
     <script>
-        var App_LOG_LIFECYCLE_EVENTS = true;
-
-        function w(msg) {                   // 교재 48페이지에선 function을 모든 상황에 전부 하나하나 만들었지만
-            if(App_LOG_LIFECYCLE_EVENTS) {  // 왼쪽처럼 하나의 함수를 만들어서 필요할 때마다 호출할 수 도 있고,
-                console.log(msg);           // 이 5줄의 코드를 같은 디렉터리에 .js 파일로 만든 후, head에 <script> 태그를
-            }                               // 이용해 가져오는 방법도 있음.
-        }                                   // 더 고급 기술로는 let w = util.w; 를 사용하여 중복을 줄일 수 도 있음. 
-
         let app1 = new Vue({                // 로컬 변수를 만들어 Vue 객체를 만듦.
             el: "#app",                     // el: - app 태그를 사용하는 객체를 
                                             // .div
                                             // div - div 태그를 사용함. div 태그가 여러 개 있을 경우 가장 먼저 발견된 태그를 사용함.
  
             data: {                         // data: - 객체의 프로퍼티를 의미
-                message: "Hello world",     // 
+                sitename: "Vue.js 애완용품샵",
+                product: {
+                    id: 1001,
+                    title: "고양이 사료, 25파운드",
+                    discription: "당신의 고양이를 위한 <em>거부할 수 없는</em>," +
+                                "유기농 25파운드 사료입니다.",
+                    // <em> 태그는 글자를 강조하는 태그임.
+                    price: 2000,
+                    image: "assets/images/product-fullsize.png"
+                },
             }, 
-            
-            // 아래의 여러 함수들은 크롬 창에서 라이프사이클의 상태가 변경되면. 즉, 특정 상황이 되어진다면 발생되는 이벤트를 처리하는 함수들임.
+            filters: {
+                formatPrice(price) {
+                    if(!parseInt(price)) { return "";}
+                    // parseInt로 price 값이 숫자인지 판단하는 코드
 
-            beforeCreate: function() {              // 이벤트 콜백 함수 생성: Veu 클래스가 만들어지기 전
-                if(App_LOG_LIFECYCLE_EVENTS) {      // 즉, 최초로 실행되면 로그를 찍어내는 함수를 만들었음.
-                    console.log('beforeCreate');
+                    if(price > 99999) {
+                        var priceString = (price / 100).toFixed(2); // 소수점 2번째 까지...
+                        var priceArray = priceString.split("").reverse();
+                        var index = 3;
+                        while (priceArray.lenth > index + 3) {
+                            priceArray.splice(index + 3, 0, ",");   // index + 3의 자리에, 지우는 값은 없고(0), 대체되는 값으로 ","을 삽입함
+                            index += 4;
+                        }
+                        return "$" + priceArray.reverse().join("");
+                    } else {
+                        return "$" + (price / 100).toFixed(2);
+                    }   // 소수점 두 자리까지만 걸러서 리턴하는 코드
+                    
                 }
-            },
-
-            created() {                             // 함수는 이런식으로 function 키워드를 생략해도 생성 가능함.
-                if(App_LOG_LIFECYCLE_EVENTS) {      // 이는 객체가 만들어진 후 로그가 찍히는 함수임.
-                    console.log('Created')
-                }
-            },
-
-            beforeMount: function() {               // 연동(Mount)이 되기 전 로그가 찍히는 함수
-                w("beforeMount");                   // 이 때, 코드를 좀 더 간결하고 재사용이 용이하게 만들 경우
-            },                                      // 위에서 미리 만들어놨던 w 함수를 사용하여 로그를 찍어낼 수 있음
-
-            mounted: function() {
-                w('Mounted');
-            },
-
-            beforeUpdate: function() {
-                w('beforeUpdate');
-            },
-
-            Updated: function() {
-                w('updated');
-            },
-
-            beforeDestroy: function() {             // 크롬 창을 닫으면. 즉, 코드가 소멸되면 로그가 찍힘
-                w('beforeDistroy');
-            },
-
-            Destroied: function() {
-                w('destroied');
+            // 필터: 
             }
+            
+
         });
         // el: element의 약자로, app 
         // data: 객체의 하나로, 사용할 변수의 하나라고 생각하면 됨.
