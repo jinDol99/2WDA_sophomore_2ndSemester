@@ -1,0 +1,76 @@
+<!--vs code에서 html 기본 골격을 자동으로 생성하려면 느낌표(!) 입력 후 tab 키를 입력하면 됨-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue js 첫 플</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!--https://v2.vuejs.org/v2/guide/#Getting-Started 참고-->
+    <!-- V3이 업데이트 되었으나, 아직 대다수의 홈페이지에서는 V2 버전을 사용하기 때문에 수업도 V2 버전으로 진행 할 예정. -->
+</head>
+<body>
+    <div id="app">{{ message }}</div>
+    <!-- 빠르게 타이핑 하려명 div#app 으로 입력하면 됨-->
+    <script>
+        var App_LOG_LIFECYCLE_EVENTS = true;
+
+        function w(msg) {                   // 교재 48페이지에선 function을 모든 상황에 전부 하나하나 만들었지만
+            if(App_LOG_LIFECYCLE_EVENTS) {  // 왼쪽처럼 하나의 함수를 만들어서 필요할 때마다 호출할 수 도 있고,
+                console.log(msg);           // 이 5줄의 코드를 같은 디렉터리에 .js 파일로 만든 후, head에 <script> 태그를
+            }                               // 이용해 가져오는 방법도 있음.
+        }                                   // 더 고급 기술로는 let w = util.w; 를 사용하여 중복을 줄일 수 도 있음. 
+
+        let app1 = new Vue({                // 로컬 변수를 만들어 Vue 객체를 만듦.
+            el: "#app",                     // el: - app 태그를 사용하는 객체를 
+                                            // .div
+                                            // div - div 태그를 사용함. div 태그가 여러 개 있을 경우 가장 먼저 발견된 태그를 사용함.
+ 
+            data: {                         // data: - 객체의 프로퍼티를 의미
+                message: "Hello world",     // 
+            }, 
+            
+            // 아래의 여러 함수들은 크롬 창에서 라이프사이클의 상태가 변경되면. 즉, 특정 상황이 되어진다면 발생되는 이벤트를 처리하는 함수들임.
+
+            beforeCreate: function() {              // 이벤트 콜백 함수 생성: Veu 클래스가 만들어지기 전
+                if(App_LOG_LIFECYCLE_EVENTS) {      // 즉, 최초로 실행되면 로그를 찍어내는 함수를 만들었음.
+                    console.log('beforeCreate');
+                }
+            },
+
+            created() {                             // 함수는 이런식으로 function 키워드를 생략해도 생성 가능함.
+                if(App_LOG_LIFECYCLE_EVENTS) {      // 이는 객체가 만들어진 후 로그가 찍히는 함수임.
+                    console.log('Created')
+                }
+            },
+
+            beforeMount: function() {               // 연동(Mount)이 되기 전 로그가 찍히는 함수
+                w("beforeMount");                   // 이 때, 코드를 좀 더 간결하고 재사용이 용이하게 만들 경우
+            },                                      // 위에서 미리 만들어놨던 w 함수를 사용하여 로그를 찍어낼 수 있음
+
+            mounted: function() {
+                w('Mounted');
+            },
+
+            beforeUpdate: function() {
+                w('beforeUpdate');
+            },
+
+            Updated: function() {
+                w('updated');
+            },
+
+            beforeDestroy: function() {             // 크롬 창을 닫으면. 즉, 코드가 소멸되면 로그가 찍힘
+                w('beforeDistroy');
+            },
+
+            Destroied: function() {
+                w('destroied');
+            }
+        });
+        // el: element의 약자로, app 
+        // data: 객체의 하나로, 사용할 변수의 하나라고 생각하면 됨.
+    </script>
+</body>
+</html>
