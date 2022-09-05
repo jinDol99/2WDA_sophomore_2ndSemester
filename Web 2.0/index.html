@@ -38,7 +38,7 @@
                     <div class="col col-expand">
                         <h1 v-text="product.title"></h1>
                         <p v-html="product.discription"></p>
-                        <p v-text="product.price"></p>
+                        <p>{{product.price | newFormatPrice}} </p>
                         <!-- 이미지가 아닌 텍스트를 바인딩 할때는 v-text 속성을 사용함-->
                         <!-- 텍스트 뿐만 아니라 계산을 할 수 있는 계산식이나 함수도 가져올 수도 있지만,-->
                         <!-- 이럴 경우 코드가 너무 길어져 유지보수가 힘들어지므로 권장하지는 않음.-->
@@ -64,11 +64,12 @@
                     discription: "당신의 고양이를 위한 <em>거부할 수 없는</em>," +
                                 "유기농 25파운드 사료입니다.",
                     // <em> 태그는 글자를 강조하는 태그임.
-                    price: 2000,
+                    price: 2000000,
                     image: "assets/images/product-fullsize.png"
                 },
             }, 
             filters: {
+                
                 formatPrice(price) {
                     if(!parseInt(price)) { return "";}
                     // parseInt로 price 값이 숫자인지 판단하는 코드
@@ -77,7 +78,7 @@
                         var priceString = (price / 100).toFixed(2); // 소수점 2번째 까지...
                         var priceArray = priceString.split("").reverse();
                         var index = 3;
-                        while (priceArray.lenth > index + 3) {
+                        while (priceArray.length > index + 3) {
                             priceArray.splice(index + 3, 0, ",");   // index + 3의 자리에, 지우는 값은 없고(0), 대체되는 값으로 ","을 삽입함
                             index += 4;
                         }
@@ -85,12 +86,20 @@
                     } else {
                         return "$" + (price / 100).toFixed(2);
                     }   // 소수점 두 자리까지만 걸러서 리턴하는 코드
-                    
+                },
+                // 1줄요약: 12345 를 $ 12,345.00 으로 바꿔주는 코드임.
+                
+                newFormatPrice(price) {
+                    if (!parseFloat(price))
+                        return "Free!";
+                    if (price > 99999)
+                        return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(price);
                 }
-            // 필터: 
+                // 위의 교재 예시는 이렇지만, 인터넷 검색으로는 더 간단하고 좋은 코드가 많으니 교재 예시는 참고만 할 것.
+                // newFormatPrice() 코드는 https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat 를 참고함.
+                
             }
-            
-
+            // 필터: 
         });
         // el: element의 약자로, app 
         // data: 객체의 하나로, 사용할 변수의 하나라고 생각하면 됨.
