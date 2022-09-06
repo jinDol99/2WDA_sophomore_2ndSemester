@@ -8,9 +8,10 @@
 </head>
 <body>
     <div id="app">
-        <p v-bind:id="dataId">{{messgae}}</p>
-        <p v-bind:class="dataClass" v-text="message2"></p>
-        <p> {{message2}} </p>
+        <p>{{messgae}}</p>
+        <div v-text="message2 + messgae +'안뇽안녕!'"></div>
+        <p v-html="dataClass"></p>
+        <div> {{ dataId + " speaks: " + message2}}</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -21,10 +22,11 @@
                 messgae: "Hello world!",
                 message2: "안녕 세상!",
                 dataId: 1234,
-                dataClass: "one"
+                dataClass: "I'm the <b>best</b> "
             }
         })
     </script>
 </body>
 </html>
-<!--예제 참고: https://bono915.tistory.com/entry/VueJS-step-4-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B0%94%EC%9D%B8%EB%94%A9data-binding-->
+<!--예제 참고: https://bono915.tistory.com/entry/VueJS-step-4-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B0%94%EC%9D%B8%EB%94%A9data-binding
+                https://chb2005.tistory.com/11?category=967830 -->
