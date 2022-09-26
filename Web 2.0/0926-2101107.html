@@ -56,7 +56,7 @@
                     <h2><b>구매자</b></h2>
                     <div class="form-group">
                         <strong>이름: </strong>
-                        <input v-model.trim="order.Name" class="form-control">
+                        <input type="text" v-model.trim="order.Name" class="form-control">
                     </div>
 
                     <div class="form-group">
@@ -89,7 +89,7 @@
                     <div class="form-group">
                         <div class="col-md-12"><strong>연락처:</strong></div>
                         <div class="col-md-12">
-                            <input v-model="order.contact" class="form-control">
+                            <input type="text" v-model="order.contact" class="form-control">
                         </div>
                     </div>
 
@@ -102,19 +102,19 @@
                                         <strong>우편번호:</strong>
                                     </div>
                                     <div class="col-md-12">
-                                        <input v-model="order.zip" class="form=control">
+                                        <input type="text" v-model="order.zip" class="form=control">
                                     </div>
                                 </div>
 
                                 <div class="col-md-12"><strong>주소:</strong>
                                     <div class="col-md-12">
-                                        <input v-model="order.address" class="form-control">
+                                        <input type="text" v-model="order.address" class="form-control">
                                     </div>
                                 </div>
 
                                 <div class="col-md-12"><strong>상세:</strong>
                                     <div class="col-md-12">
-                                        <input v-model="order.detailAddress" class="form-control">
+                                        <input type="text" v-model="order.detailAddress" class="form-control">
                                     </div>
                                 </div>
                             </fieldset>
@@ -139,31 +139,30 @@
                     <div class="form-group">
                         <div class="col-md-6 boxes">
                             <input type="checkbox"
-                                    id="gift"
-                                    value="true"
-                                    v-bind:true-value="order.sendGift"
-                                    v-bind:false-value="order.dontSendGift"
-                                    v-model="order.gift">
-                            <label for="gift">구매자와 동일</label>
+                                    id="isSameOrderer"
+                                    value="false"
+                                    v-model="order.isSameOrderer"
+                                    v-on:click="setSameOrderer"
+                                    >
+                            <label for="isSameOrderer">구매자와 동일</label>
                         </div>
                     </div>
                     <hr>
-
                     <div class="col-md-6">
                         <strong>이름: </strong>
-                        <input v-model.trim="receiver.Name" class="form-control">
+                        <input type="text" v-model.trim="receiver.Name" class="form-control">
                     </div>
 
                     <div class="form-group">
                         <div class="col-md-12"><strong>연락처:</strong></div>
                         <div class="col-md-12">
-                            <input v-model.trim="receiver.contact" class="form-control">
+                            <input type="text" v-model.trim="receiver.contact" class="form-control">
                         </div>
                     </div>
 
                     <div class="col-md-12"><strong>주소:</strong>
                         <div class="col-md-12">
-                            <input v-model="receiver.address" class="form-control">
+                            <input type="text" v-model="receiver.address" class="form-control">
                         </div>
                     </div>
                     
@@ -174,7 +173,14 @@
                                     @click="submitForm">전송하기</button>
                         </div>
                     </div>
-                </div>                            
+                </div>
+
+                <div v-if="isSameOrderer">
+                    {{ setReceiverValueFull() }}
+                </div> <div v-else-if="isSameOrderer == false">
+                    {{ setReceiverValueEmpty() }}
+                </div>
+                <!-- "구매자와 동일" 버튼을 클릭하여 불린값이 변경되었을 때 값을 변경-->
             </div>
         </main>
     </div>
@@ -207,10 +213,8 @@
                     address: "",
                     detailAddress: "",
                     zip: "",
-                    gift: false,
+                    isSameOrderer: false,
                     method: '자택',
-                    sendGift: "선물 배송",
-                    dontSendGift: "선물 배송 아님",
                     home: "자택",
                     office: "직장",
                     bill: "",
@@ -327,8 +331,23 @@
                 
                 submitForm() {
                     alert("주문하기 제출 완료");
+                },
+                
+                setSameOrderer() {
+                    this.isSameOrderer = !!!this.isSameOrderer;
+                },
+
+                setReceiverValueFull() {
+                    this.receiver.Name = this.order.Name;
+                    this.receiver.contact = this.order.contact;
+                    this.receiver.address = this.order.address;
+                },
+
+                setReceiverValueEmpty() {
+                    this.receiver.Name = "";
+                    this.receiver.contact = "";
+                    this.receiver.address = "";
                 }
-            
             }
         });
     </script>
