@@ -228,19 +228,13 @@
                     contact: "",
                     request: "",
                 },
+
                 receiver: {
                     Name: "",
                     contact: "",
                     address: "",
                 },
-                states: {
-                    Al: "알라바마",
-                    AK: "알레스카",
-                    AR: "애리조나",
-                    CA: "캘리포니아",
-                    NV: "네바다",
-                    NY: "뉴욕",
-                },
+                
                 bills: {
                     cash: "현금",
                     card: "카드",
@@ -340,7 +334,7 @@
                     let check = /^(01[016789])(-{0,1})([0-9]{3,4})(-{0,1})([0-9]{4})$/;
                     if (this.order.Name == '' || this.order.contact == '' || this.order.zip == '' || this.order.address == '' || this.order.detailAddress == ''
                         || this.receiver.Name == '' || this.receiver.contact == '' || this.receiver.address == ''
-                        || this.receiver.detailAddress == '' || this.order.method == '') {
+                        || this.receiver.detailAddress == '') {
                         alert('비어있는 칸이 있습니다.');
                     } else if (!(typeof (this.order.zip) == 'number')) {
                         alert('우편번호는 숫자만 입력하세요');
