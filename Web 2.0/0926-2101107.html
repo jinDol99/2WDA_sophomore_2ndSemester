@@ -97,19 +97,31 @@
                                         <strong>우편번호:</strong>
                                     </div>
                                     <div class="col-md-12">
+<<<<<<< HEAD
                                         <input v-model.trim="order.zip" class="form=control">
+=======
+                                        <input v-model="order.zip" class="form=control">
+>>>>>>> parent of dc78e3b (modified: 0926-2101107.html)
                                     </div>
                                 </div>
 
                                 <div class="col-md-12"><strong>주소:</strong>
                                     <div class="col-md-12">
+<<<<<<< HEAD
                                         <input v-model.trim="order.address" class="form-control">
+=======
+                                        <input v-model="order.address" class="form-control">
+>>>>>>> parent of dc78e3b (modified: 0926-2101107.html)
                                     </div>
                                 </div>
 
                                 <div class="col-md-12"><strong>상세:</strong>
                                     <div class="col-md-12">
+<<<<<<< HEAD
                                         <input v-model.trim="order.detailAddress" class="form-control">
+=======
+                                        <input v-model="order.detailAddress" class="form-control">
+>>>>>>> parent of dc78e3b (modified: 0926-2101107.html)
                                     </div>
                                 </div>
                             </fieldset>
@@ -132,30 +144,51 @@
                     <h2><b>배송지</b></h2>
                     <div class="form-group">
                         <div class="col-md-6 boxes">
+<<<<<<< HEAD
                             <input type="checkbox" id="isSameOrderer" value="false" v-model="order.isSameOrderer"
                                 v-on:click="setSameOrderer">
                             <label for="isSameOrderer">구매자와 동일</label>
+=======
+                            <input type="checkbox"
+                                    id="gift"
+                                    value="true"
+                                    v-bind:true-value="order.sendGift"
+                                    v-bind:false-value="order.dontSendGift"
+                                    v-model="order.gift">
+                            <label for="gift">구매자와 동일</label>
+>>>>>>> parent of dc78e3b (modified: 0926-2101107.html)
                         </div>
                     </div>
                     <hr>
 
+<<<<<<< HEAD
                 </div>
 
                 <div v-if="isSameOrderer" class="form-group">
                     <div class="col-md-6">
                         <strong>이름: </strong>
                         <input v-model.trim="order.Name" class="form-control" disabled>
+=======
+                    <div class="col-md-6">
+                        <strong>이름: </strong>
+                        <input v-model.trim="receiver.Name" class="form-control">
+>>>>>>> parent of dc78e3b (modified: 0926-2101107.html)
                     </div>
 
                     <div class="form-group">
                         <div class="col-md-12"><strong>연락처:</strong></div>
                         <div class="col-md-12">
+<<<<<<< HEAD
                             <input v-model.trim="order.contact" class="form-control" disabled>
+=======
+                            <input v-model.trim="receiver.contact" class="form-control">
+>>>>>>> parent of dc78e3b (modified: 0926-2101107.html)
                         </div>
                     </div>
 
                     <div class="col-md-12"><strong>주소:</strong>
                         <div class="col-md-12">
+<<<<<<< HEAD
                             <input v-model.trim="order.address" class="form-control" disabled>
                         </div>
                     </div>
@@ -188,6 +221,20 @@
                     </div>
                 </div>
                 <!-- "구매자와 동일" 버튼을 클릭하여 불린값이 변경되었을 때 값을 변경-->
+=======
+                            <input v-model="receiver.address" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <button type="submit"
+                                    class="btn btn-primary submit"
+                                    @click="submitForm">전송하기</button>
+                        </div>
+                    </div>
+                </div>                            
+>>>>>>> parent of dc78e3b (modified: 0926-2101107.html)
             </div>
         </main>
     </div>
@@ -220,8 +267,10 @@
                     address: "",
                     detailAddress: "",
                     zip: "",
-                    isSameOrderer: false,
+                    gift: false,
                     method: '자택',
+                    sendGift: "선물 배송",
+                    dontSendGift: "선물 배송 아님",
                     home: "자택",
                     office: "직장",
                     bill: "",
@@ -331,6 +380,7 @@
                 },
 
                 submitForm() {
+<<<<<<< HEAD
                     let check = /^(01[016789])(-{0,1})([0-9]{3,4})(-{0,1})([0-9]{4})$/;
                     if (this.order.Name == '' || this.order.contact == '' || this.order.zip == '' || this.order.address == '' || this.order.detailAddress == ''
                         || this.receiver.Name == '' || this.receiver.contact == '' || this.receiver.address == ''
@@ -359,7 +409,11 @@
                     this.receiver.Name = "";
                     this.receiver.contact = "";
                     this.receiver.address = "";
+=======
+                    alert("주문하기 제출 완료");
+>>>>>>> parent of dc78e3b (modified: 0926-2101107.html)
                 }
+            
             }
         });
     </script>
