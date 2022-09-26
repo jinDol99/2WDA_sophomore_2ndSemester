@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js 애완용품샵</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link href="assets/css/app.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="navbar navbar-default">
+                <h1 v-text="sitename"></h1>
+            </div>
+            <div class="=glyphicon glyphicon-shopping-cart">
+                <button type="button" class="btn btn-primary" @click="showCheckout">
+                    <div v-if="cartItemCount == ''">
+                        <span>장바구니 비었음</span>
+                    </div><div v-else-if="cartItemCount == product.inventory">
+                        <span>장바구니 꽉 참 : 주문하기</span>
+                    </div><div v-else>
+                        <span>장바구니 {{ cartItemCount }}개 : 주문하기</span>
+                    </div>
+                </button>
+                <button v-if="showProduct" type="button" class="btn btn-primary" @click="resetCart">장바구니 초기화하기</button>
+            </div>
+        </header>
+
+        <main>
+             <div class="row product">     
+                <div v-if="showProduct" class="row">
+                    <div class = "col">
+                        <figure>
+                            <img v-bind:src="product.image" alt="">
+                        </figure>
+                    </div>
+                        <div class="col col-expand">
+                        <h1 v-text="product.title"></h1>
+                        <p v-html="product.discription"></p>
+                        <p>{{product.price | formatPrice}} </p>
+                        <p>현재 재고량: {{ remainedInventory }}</p>
+
+                        <button v-if="canAddToCart" class="btn btn-primary btn-lg" v-on:click="addToCart">장바구니 담기</button>
+                        <button v-else disabled class="btn btn-primary btn-lg">장바구니 담기</button>
+                    </div>
+                </div>
+
+
+
+
+                <div v-else class="row">
+                    <hr>
+                    <h2><b>구매자</b></h2>
+                    <div class="col-md-6">
+                        <strong>이름: </strong>
+                        <input v-model.trim="order.Name" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <strong>결제유형: 
+                            <div class="col-md-6 boxes">
+                                <input type="radio"
+                                        name="checkBill"
+                                        id="bill"
+                                        :value="bills.cash"
+                                        v-model="order.bill">
+                                <label for="cash"> {{ bills.cash }}</label>
+
+                                <input type="radio"
+                                        name="checkBill"
+                                        id="bill"
+                                        :value="bills.card"
+                                        v-model="order.bill">
+                                <label for="card"> {{ bills.card }}</label>
+
+                                <input type="radio"
+                                        name="checkBill"
+                                        id="bill"
+                                        :value="bills.point"
+                                        v-model="order.bill">
+                                <label for="point"> {{ bills.point }} </label>
+                            </div>
+                        </strong>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12"><strong>연락처:</strong></div>
+                        <div class="col-md-12">
+                            <input v-model="order.contact" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <form>
+                            <fieldset>
+                                <legend>주소</legend>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <strong>우편번호:</strong>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <input v-model="order.zip" class="form=control">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12"><strong>주소:</strong>
+                                    <div class="col-md-12">
+                                        <input v-model="order.address" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12"><strong>상세:</strong>
+                                    <div class="col-md-12">
+                                        <input v-model="order.detailAddress" class="form-control">
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <!-- 참고: https://velog.io/@borab/Vue-%EC%9A%94%EC%86%8C-%EA%B0%84%EB%8B%A8-%EC%A0%95%EB%A6%AC#fieldset-->
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <strong>요청사항:</strong>
+                        </div>
+                        <div class="col-md-12">
+                            <select v-model="order.request" class="form=control">
+                                <option v-for="(value, key) in requests"
+                                        :value="key"> {{value}} </option>       
+                            </select>                       
+                        </div>
+                    </div>
+                    <br>
+                    <hr>
+                    <h2><b>구매자</b></h2>
+                    <div class="form-group">
+                        <div class="col-md-6 boxes">
+                            <input type="checkbox"
+                                    id="gift"
+                                    value="true"
+                                    v-bind:true-value="order.sendGift"
+                                    v-bind:false-value="order.dontSendGift"
+                                    v-model="order.gift">
+                                    <!-- v-bind:true-value 및 false-value는 각각의 불린값에 따라-->
+                                    <!-- 표시되는 값을 설정하는 속성임-->
+                            <!-- 속성값은 위 처럼 띄어쓰기가 아닌 줄바꿈으로도 작성 가능 -->
+                            <label for="gift">구매자와 동일</label>
+                            <!-- label 태그는 관계를 형성하는 역할임 -->
+                            <!-- for 속성은 같은 속성값을 사용하는 다른 태그와 연결하여-->
+                            <!-- 글자를 클릭해도 input 박스로 연결되도록 하는 속성임.-->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6 boxes">
+                            <input type="radio"
+                                    id="home"
+                                    :value="order.home"
+                                    v-model="order.method">
+                                    <!-- 위의 id값 처럼 하드코딩 보다는, :value 처럼 값을 가져오는-->
+                                    <!-- 소프트코딩(?) 방식을 가능하면 사용하는 것이 좋음.-->
+                                    <!-- 여기서 value 앞에 콜론(:)의 의미는 v-value의 약어임.-->
+
+                            <label for="home">자택</label>
+                            <input type="radio"
+                                    id="office"
+                                    value="Office"
+                                    v-model="order.method">
+                            <label for="office">직장</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <button type="submit"
+                                    class="btn btn-primary submit"
+                                    @click="submitForm">전송하기</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <pre>
+                            이름: {{order.Name}}
+                            주소: {{order.address}}
+                            도시: {{order.city}}
+                            주: {{order.state}}
+                            우편번호: {{order.zip}}
+                            선물로 보내기: {{order.gift}}
+                            배송지명: {{order.method}}
+                            결제방법: {{order.bill}}
+                            <!-- 만약 order 객체 안에 firstName과 lastName 프로퍼티만 존재한다고 가정하자.-->
+                            <!-- 하지만 이 상태로 값을 입력하더라도 Vue에서는 자동으로 프로퍼티를 생성함 -->
+                            <!-- 정확히는 프로퍼티를 생성하는 것이 아니라 undefined를 생성하지만-->
+                            <!-- undefined를 반환하기전 이를 빈 값("")으로 치환하여 출력하게 됨. -->
+                        </pre>
+                    </div>
+                </div>                            
+            </div>
+        </main>
+    </div>
+
+    <script>
+        window.onload = function() {
+            let temp = JSON.parse(localStorage.getItem("cart"));
+            if (temp) {
+                app1.cart = temp;
+            }
+        }
+
+        let app1 = new Vue({ 
+            el: "#app",
+            data: {
+                sitename: "Vue.js 애완용품샵",
+                product: {
+                    id: 1001,
+                    title: "고양이 사료, 25파운드",
+                    discription: "당신의 고양이를 위한 <em>거부할 수 없는</em>," +
+                                "유기농 25파운드 사료입니다.",
+                    price: 200000,
+                    image: "assets/images/product-fullsize.png",
+                    inventory: 5, 
+                },
+                cart: [],   
+                showProduct: true, 
+                order: {
+                    Name: "",
+                    address: "",
+                    detailAddress: "",
+                    zip: "",
+                    gift: false,
+                    method: '자택',
+                    sendGift: "선물 배송",
+                    dontSendGift: "선물 배송 아님",
+                    home: "자택",
+                    office: "직장",
+                    bill: "",
+                    contact: "",
+                    request: "",
+                },
+                states:{
+                    Al: "알라바마",
+                    AK: "알레스카",
+                    AR: "애리조나",
+                    CA: "캘리포니아",
+                    NV: "네바다",
+                    NY: "뉴욕",
+                },
+                bills: {
+                    cash: "현금",
+                    card: "카드",
+                    point: "포인트",
+                },
+                requests: {
+                    rq1: "배송 전 연락주세요.",
+                    rq2: "부재시 문 앞에 놓아주세요.",
+                    rq3: "경비실에 맡겨주세요.",
+                    rq4: "무인 택배함에 보관해주세요.",
+                }
+            },
+
+            computed:{
+                cartItemCount() {
+                    return this.cart.length || '';
+                },
+                
+                productName() {
+                    return this.product.title;
+                    return `[${this.product.id}] ${this.product.title}`;
+                },
+
+                remainedInventory() {
+                    let v = this.product.inventory - this.cart.length;
+                    return v > 0 ? `${v}개` : `없음` ;
+                },
+                
+                canAddToCart() {
+                    return this.product.inventory > this.cart.length;
+                },  
+            },
+            
+            beforeUpdate() {
+                localStorage.setItem("cart", JSON.stringify(this.cart));
+                console.log(`Local Storage에 배열이 저장되었습니다.`);
+
+                var output = localStorage.getItem("cart");
+                var cartArr = JSON.parse(output);
+                this.cart = cartArr;
+                console.log(`Local Storage에서 배열을 출력하였습니다.`)
+                console.log(cartArr);
+            },
+
+            filters: {
+                formatPrice(price) {
+                    if(!parseInt(price)) { return "";}
+
+                    if(price > 99999) {
+                        var priceString = (price / 100).toFixed(2);
+                        var priceArray = priceString.split("").reverse();
+                        var index = 3;
+                        while (priceArray.length > index + 3) {
+                            priceArray.splice(index + 3, 0, ",");
+                            index += 4;
+                        }
+                        return "$" + priceArray.reverse().join("");
+                    } else {
+                        return "$" + (price / 100).toFixed(2);
+                    }
+                },
+                
+                newFormatPrice(price) {
+                    
+                    if (!parseFloat(price))
+                        return "Free!";
+                    else
+                        return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(price);
+
+                }   
+            },
+            methods: {
+                addToCart() {
+                    if(this.product.inventory > this.cart.length) {
+                        this.cart.push(this.product.id);
+                        this.saveCart();
+                    }   
+                },
+
+                showCheckout() {
+                    if (this.cart.length == 0) {
+                        alert("장바구니에 상품이 없습니다.")
+                    } else {
+                        this.showProduct = !!!this.showProduct;
+                    }
+                },  
+
+                resetCart() {
+                    this.cart.splice(0);
+                },
+
+                saveCart() {
+                    window.localStorage.setItem("cart", JSON.stringify(this.cart));
+                },
+                
+                submitForm() {
+                    alert("주문하기 제출 완료");
+                }
+            
+            }
+        });
+    </script>
+</body>
+</html>
+
+<!--
+    *** 오늘 오전에 배운 것 ***
+        data 내의 객체 속 프로퍼티가 없을 때, 해당 프로퍼티에 접근하면 Vue의 동작 과정
+        v-for 반복문
+        v-model과 .trim .number 키워드
+        v-bind:true-value 와 v-bind:false-value
+
+
+
+-->
