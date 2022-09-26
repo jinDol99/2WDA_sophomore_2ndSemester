@@ -54,7 +54,7 @@
                 <div v-else class="row">
                     <hr>
                     <h2><b>구매자</b></h2>
-                    <div class="col-md-6">
+                    <div class="form-group">
                         <strong>이름: </strong>
                         <input v-model.trim="order.Name" class="form-control">
                     </div>
@@ -135,7 +135,7 @@
                     </div>
                     <br>
                     <hr>
-                    <h2><b>구매자</b></h2>
+                    <h2><b>배송지</b></h2>
                     <div class="form-group">
                         <div class="col-md-6 boxes">
                             <input type="checkbox"
@@ -144,57 +144,35 @@
                                     v-bind:true-value="order.sendGift"
                                     v-bind:false-value="order.dontSendGift"
                                     v-model="order.gift">
-                                    <!-- v-bind:true-value 및 false-value는 각각의 불린값에 따라-->
-                                    <!-- 표시되는 값을 설정하는 속성임-->
-                            <!-- 속성값은 위 처럼 띄어쓰기가 아닌 줄바꿈으로도 작성 가능 -->
                             <label for="gift">구매자와 동일</label>
-                            <!-- label 태그는 관계를 형성하는 역할임 -->
-                            <!-- for 속성은 같은 속성값을 사용하는 다른 태그와 연결하여-->
-                            <!-- 글자를 클릭해도 input 박스로 연결되도록 하는 속성임.-->
                         </div>
                     </div>
+                    <hr>
+
+                    <div class="col-md-6">
+                        <strong>이름: </strong>
+                        <input v-model.trim="receiver.Name" class="form-control">
+                    </div>
+
                     <div class="form-group">
-                        <div class="col-md-6 boxes">
-                            <input type="radio"
-                                    id="home"
-                                    :value="order.home"
-                                    v-model="order.method">
-                                    <!-- 위의 id값 처럼 하드코딩 보다는, :value 처럼 값을 가져오는-->
-                                    <!-- 소프트코딩(?) 방식을 가능하면 사용하는 것이 좋음.-->
-                                    <!-- 여기서 value 앞에 콜론(:)의 의미는 v-value의 약어임.-->
-
-                            <label for="home">자택</label>
-                            <input type="radio"
-                                    id="office"
-                                    value="Office"
-                                    v-model="order.method">
-                            <label for="office">직장</label>
+                        <div class="col-md-12"><strong>연락처:</strong></div>
+                        <div class="col-md-12">
+                            <input v-model.trim="receiver.contact" class="form-control">
                         </div>
                     </div>
 
+                    <div class="col-md-12"><strong>주소:</strong>
+                        <div class="col-md-12">
+                            <input v-model="receiver.address" class="form-control">
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
                         <div class="col-md-12">
                             <button type="submit"
                                     class="btn btn-primary submit"
                                     @click="submitForm">전송하기</button>
                         </div>
-                    </div>
-
-                    <div>
-                        <pre>
-                            이름: {{order.Name}}
-                            주소: {{order.address}}
-                            도시: {{order.city}}
-                            주: {{order.state}}
-                            우편번호: {{order.zip}}
-                            선물로 보내기: {{order.gift}}
-                            배송지명: {{order.method}}
-                            결제방법: {{order.bill}}
-                            <!-- 만약 order 객체 안에 firstName과 lastName 프로퍼티만 존재한다고 가정하자.-->
-                            <!-- 하지만 이 상태로 값을 입력하더라도 Vue에서는 자동으로 프로퍼티를 생성함 -->
-                            <!-- 정확히는 프로퍼티를 생성하는 것이 아니라 undefined를 생성하지만-->
-                            <!-- undefined를 반환하기전 이를 빈 값("")으로 치환하여 출력하게 됨. -->
-                        </pre>
                     </div>
                 </div>                            
             </div>
@@ -238,6 +216,11 @@
                     bill: "",
                     contact: "",
                     request: "",
+                },
+                receiver: {
+                    Name: "",
+                    contact: "",
+                    address: "",
                 },
                 states:{
                     Al: "알라바마",
