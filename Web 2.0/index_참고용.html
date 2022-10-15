@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js 애완동물샵</title>
+    <link href="assets/css/app.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous">
+        </script>
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <div class="navbar navbar-default">
+                <div class="navbar-header">
+                    <h1 v-text="sitename"></h1>
+                </div>
+                <div class="nav justify-content-end cart">
+                    <button type="button" class="btn btn-default btn-lg" @click="showCheckout">
+                        <span class="glyphicon glyphicon-shopping-cart">장바구니{{ cartItemCount }}</span> 주문하기
+                    </button>
+                </div>
+            </div>
+        </header>
+        <main>
+            <div class="row product">
+                <div v-if="showProduct" class="row">
+                    <div class="col">
+                        <figure>
+                            <img :src="product.image" alt="">
+                        </figure>
+                    </div>
+                    <div class="col col-expand">
+                        <h1 v-text="product.title"></h1>
+                        <p v-html="product.description"></p>
+                        <p class="price">
+                            {{product.price | formatPrice}}
+                        </p>
+                        <p>현재 재고량: {{ remaindInventory }}</p>
+                        <button v-if="canAddToCart" class="btn btn-primary btn-lg" @click="addToCart"> 장바구니 담기</button>
+                        <button v-else disabled class="btn btn-secondary btn-lg"> 장바구니 담기</button>
+                        <span class="inventory-message" v-if="product.inventory - cartItemCount === 0">
+                            품절
+                        </span>
+                        <span class="inventory-message" v-else-if="product.inventory - cartItemCount < 5">
+                            {{product.inventory - cartItemCount}} 남았습니다!
+                        </span>
+                        <span class="inventory-message" v-else>
+                            지금 구매하세요.
+                        </span>
+                        <button v-if="canEmptyToCart" class="btn btn-primary btn-lg" @click="emptyToCart">장바구니
+                            비우기</button>
+                        <button v-else disabled class="btn btn-secondary btn-lg"> 장바구니 비우기</button>
+                    </div>
+                </div>
+                <div v-else>
+                    <div class="col-md-10 col-md-offset-1">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">애완용품샵 체크아웃</div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <h4><strong>구매자 정보 입력</strong></h4>
+                                    </div>
+                                    <hr>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        <strong>이름:</strong>
+                                        <input v-model.trim="order.name" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-6 boxes">
+                                            <strong>결제유형:</strong>
+                                            <input type="radio" id="cash" value="order.cash" v-model="order.pay">
+                                            <label for="cash">현금</label>
+                                            <input type="radio" id="card" value="order.card" v-model="order.pay">
+                                            <label for="card">카드</label>
+                                            <input type="radio" id="point" value="order.point" v-model="order.pay">
+                                            <label for="point">포인트</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>연락처: </strong>
+                                        <input v-model.trim="order.phone" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <strong>주소: 우편번호: </strong>
+                                        <input v-model.number="order.zip" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12"><strong>주소: </strong></div>
+                                    <div class="col-md-12">
+                                        <input v-model.trim="order.address" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12"><strong>상세 주소: </strong></div>
+                                    <div class="col-md-12">
+                                        <input v-model.trim="order.detail" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12"><strong>요청사항: </strong>
+                                        <div class="col-md-12">
+                                            <select v-model="order.state" class="form-control">
+                                                <option disabled value="">요청사항</option>
+                                                <option v-for="(v, k) in states" v-bind:value="v">{{ v }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <br>
+                                <h2>배송지</h2>
+                                <div class="form-group">
+                                    <div class="col-md-6 boxes">
+                                        <input type="checkbox" id="same" value="true" v-model="order.same"
+                                            @click="sameReceiver">
+                                        <label for="same">구매자와 동일</label>
+                                    </div>
+                                    <hr>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>수령인:</strong>
+                                    <input v-model.trim="order.same_name" class="from-control">
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12"><strong>연락처:</strong></div>
+                                    <div class="col-md-12">
+                                        <input v-model.trim="order.same_phone" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12"><strong>우편번호:</strong></div>
+                                    <div class="col-md-12">
+                                        <input v-model.number="order.same_zip" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12"><strong>주소:</strong></div>
+                                    <div class="col-md-12">
+                                        <input v-model.trim="order.same_address" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12"><strong>상세주소:</strong></div>
+                                    <div class="col-md-12">
+                                        <input v-model.trim="order.same_detail" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-6 boxes">
+                                        <input type="radio" id="home" value="order.home" v-model="order.method">
+                                        <label for="home">자택</label>
+                                        <input type="radio" id="office" value="order.office" v-model="order.method">
+                                        <label for="office">직장</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 verify">
+                                    <button type="submit" class="btn btn-primary submit" @click="submitForm">주문하기
+                                    </button>
+                                </div>
+                                <div class="col-md-12 verify">
+                                    <pre>
+                                        이름: {{order.name}}
+                                        결재유형: {{order.pay}}
+                                        연락처: {{order.phone}}
+                                        우편번호: {{order.zip}}
+                                        주소: {{order.address}}
+                                        상세: {{order.detail}}
+                                        요청사항: {{order.state}}
+                                        주소지: {{order.method}}
+                                        선물: {{order.same}}
+                                    </pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script type="text/javascript">
+        var APP_LOG_LIFECYCLE_EVENTS = true;
+
+        var utils = {
+            w(msg) {
+                if (APP_LOG_LIFECYCLE_EVENTS) {
+                   }
+            }
+        }
+
+        window.onload = function () {
+            let temp = JSON.parse(localStorage.getItem("cart"));
+            if (temp) {
+                console.log(temp);
+                webstore.cart = temp;
+            }
+        }
+
+        let webstore = new Vue({
+            el: '#app',
+            data: {
+                sitename: "Vue.js 애완동물샵",
+                product: {
+                    id: 1001,
+                    title: "고양이 사료, 25파운드",
+                    description: "당신의 고양이를 위한 <em>거부할 수 없는</em>, " +
+                        "유기농 25파운드 사료입니다.",
+                    price: 2000,
+                    image: "assets/images/product-fullsize.png",
+                    inventory: 10,
+                },
+                cart: [],
+                showProduct: true,
+                order: {
+                    name: '',
+                    pay: '',
+                    phone: '',
+                    zip: '',
+                    address: '',
+                    detail: '',
+                    state: '',
+                    method: '자택',
+                    same: '구매자와 동일',
+                    sameBuyer: '구매자와 동일',
+                    dontSameBuyer: '구매자와 동일하지 않게 하기',
+                    home: '자택',
+                    office: '직장',
+                    same: false,
+                    same_name: '',
+                    same_phone: '',
+                    same_zip: '',
+                    same_address: '',
+                    same_detail: '',
+                },
+                states: {
+                    CA: '배송전 연락바람',
+                    DO: '부재시 문앞에 두세요',
+                    SO: '경비실에 맡겨주세요',
+                    NO: '선택안함',
+                },
+            },
+            computed: {
+                cartItemCount() {
+                    return this.cart.length;
+                },
+
+                remaindInventory() {
+                    let v = this.product.inventory - this.cart.length;
+                    return v > 0 ? `${v}개` : `없음`;
+                },
+
+                canAddToCart() {
+                    return this.product.inventory > this.cart.length;
+                },
+
+                canEmptyToCart() {
+                    return this.cart.length != 0;
+                },
+            },
+
+            filters: {
+                formatPrice(price) {
+                    if (!parseInt(price)) { return ""; }
+                    if (price > 99999) {
+                        var priceString = (price / 100).toFixed(2);
+                        var priceArray = priceString.split("").reverse();
+                        var index = 3;
+                        while (priceArray.length > index + 3) {
+                            priceArray.splice(index + 3, 0, ",");
+                            index += 4;
+                        }
+                        return "$" + priceArray.reverse().join("");
+                    } else {
+                        return "$" + (price / 100).toFixed(2);
+                    }
+                },
+
+            },
+
+            methods: {
+                addToCart() {
+                    if (this.product.inventory > this.cart.length) {
+                        this.cart.push(this.product.id);
+                        this.saveCart();
+                    }
+                },
+
+                showCheckout() {
+                    if (this.cart.length == 0) {
+                        alert("주문 불가!")
+                    } else {
+                        this.showProduct = !!!this.showProduct;
+                    }
+                },
+
+                emptyToCart() {
+                    this.cart.splice(0);
+                    this.saveCart();
+                },
+
+                saveCart() {
+                    window.localStorage.setItem("cart", JSON.stringify(this.cart));
+                },
+
+                submitForm() {
+                    let check = /^(01[016789])(-{0,1})([0-9]{3,4})(-{0,1})([0-9]{4})$/;
+                    if (this.order.name == '' || this.order.phone == '' || this.order.zip == '' || this.order.address == '' || this.order.detail == ''
+                        || this.order.same_name == '' || this.order.same_phone == '' || this.order.same_zip == '' || this.order.same_address == ''
+                        || this.order.same_detail == '' || this.order.method == '') {
+                        alert('비어있는 칸이 있습니다.');
+                    } else if (!(typeof (this.order.zip) == 'number' || typeof (this.order.same_zip) == 'number')) {
+                        alert('우편번호는 숫자만 입력하세요');
+                    } else if (!check.test(this.order.phone)) {
+                        alert("올바르지 않은 전화번호입니다.");
+                    } else {
+                        alert('제출 완료되었습니다');
+                    }
+                },
+                sameReceiver() {
+                    if (this.order.same == false) {
+                        this.order.same_name = this.order.name;
+                        this.order.same_phone = this.order.phone;
+                        this.order.same_zip = this.order.zip;
+                        this.order.same_address = this.order.address;
+                        this.order.same_detail = this.order.detail;
+                    } else {
+                        this.order.same_name = '';
+                        this.order.same_phone = '';
+                        this.order.same_zip = '';
+                        this.order.same_address = '';
+                        this.order.same_detail = '';
+                    }
+                },
+            }
+        });  
+    </script>
+</body>
+
+</html>
