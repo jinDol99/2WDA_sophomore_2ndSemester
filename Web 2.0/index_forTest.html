@@ -22,6 +22,8 @@
             [44p.]  해당 키와 대응하는 값을 참조하여 문자열을 표현할 수 있음.
                     만약 heading 태그가 아니며, 문자열과 함께 값을 표현하고 싶다면 위처럼 mastache 표현법을
                     사용하면 쉽게 표현이 가능함.
+                    mastache는 {{ ... }} 형식으로 작성하며, 자바의 System.out.println( ... ) 구문 처럼
+                    내용물을 작성하면 쉽게 내가 원하는 것을 표현 할 수 있음.
         -->
         <main>
             <div class="row product">
@@ -31,17 +33,25 @@
                     </figure>
                 </div>
                 <div class="col col-expand">
-                    <h1 v-text="product.title"></h1>
+                    <h1>{{product.title}}</h1>
                     <p v-html="product.description"></p>
-                    <p v-text="product.price" class="price"></p>
+                    <p class="price">
+                        {{product.price | formatPrice}}
+                    </p>
                     <!--[3.]    객체의 값으로 HTML 태그가 있고, 이를 적용시키고 싶다면 v-html 속성을 이용해
                         [55p.]  Vue 객체 속 HTML 태그 값을 불러 읽어드릴 수 있음.
                     -->
+
+                    <!--[5.]    Vue의 filter 객체 속에 있는 필터 함수를 만들고, 이를 적용하려면
+                        [58p.]  위와 같이 mastache 표기법으로 값을 우선 넣은 뒤 뒤에 | 연산자를 사용하여
+                                필터링 할 함수를 입력하면 쉽게 출력 필터를 삽입할 수 있음.
+                    -->
                 </div>
             </div>
+            <button class="btn btn-primary btn-lg" v-on:click="addToCart">
+                장바구니 담기
+            </button>
         </main>
-
-
 
     </div>
     <script type="text/javascript">
@@ -63,10 +73,46 @@
                             "유기농 25파운드 사료입니다.",
                     price: 2000,
                     image: "assets/images/product-fullsize.png",
+                },
+                cart: []            
+            },
+            // [1.] 위에서 설명했다시피, 저장되어있는 여러 데이터들은 Vue 인스턴스의
+            // [44p]data 란 이름의 키 값에 객체 형식으로 저장해야함.
+            // 객체 형식으로 키, 값을 지정하는 방식은 { 키: 값, 키2: 값, ...} 의 형식으로 작성 가능.
+
+            filters: {
+                formatPrice: function(price) {
+                    if (!parseInt(price)) {return "";}
+                    if (price > 99999) {
+                        var priceString = (price/100).toFixed(2);
+                        var priceArray = priceString.split("").reverse();
+                        var index = 3;
+                        while (priceArray.length > index + 3) {
+                            priceArray.splice(index + 3, 0, ",");
+                            index +=4;
+                        }
+                        return "$" + priceArray.reverse().join("");
+                    } else {
+                        return "$" + (price / 100).toFixed(2);
+                    }
+                },
+                // [4.] 정수를 입력받아 $12,345.67 같은 형식으로 반환하되, 숫자가 아니면(NaN) 공백을
+                // [57p]반환하는 함수. 복잡하다면 아래와 같이 간략화된 코드도 사용할 수 있음.
+                /*
+                formatPrice(price) {
+		            if (!parseFloat(price))
+			            return "Free";
+		            if (price > 99999)
+			            return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(price);
                 }
-                
-                            
-            }
+                */
+                // 이처럼 입력값을 특정 형태로 "필터링 출력"하는 함수들은 Vue의 filters 객체에 삽입.
+            },
+            methods: {
+                addToCart: function() {
+                    this.cart.push(this.product.id);
+                }
+            },
         });
     </script>
     <h1>Hello world!</h1>
