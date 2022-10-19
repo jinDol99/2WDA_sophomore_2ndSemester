@@ -35,13 +35,6 @@ public class ch03_221015_29_physicData {
     public static void main(String[] args) {
         Scanner stdIn = new Scanner(System.in);
         PhyscData[] x = {
-            // new PhyscData("고건호", 162, 0.3),
-            // new PhyscData("강신성", 173, 0.7),
-            // new PhyscData("유다연", 175, 2.0),
-            // new PhyscData("박준홍", 171, 1.5),
-            // new PhyscData("조현주", 168, 0.4),
-            // new PhyscData("진솔미", 174, 1.2),
-            // new PhyscData("하영수", 169, 0.8)
             new PhyscData("강민하", 162, 0.3),
             new PhyscData("이수현", 168, 0.4),
             new PhyscData("황지안", 169, 0.8),
