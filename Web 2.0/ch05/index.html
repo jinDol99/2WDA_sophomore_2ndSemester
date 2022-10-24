@@ -25,92 +25,92 @@
       <div v-if="showProduct">
         <!-- 5개의 상품을 차례대로 출력하기 위한 새로운 div 태그와 함께 v-for 속성을 입력 -->
         <div v-for="product in products">
-
-          <div class="col-md-2 col-md-offset-1">
+          <div class="row">
+            <div class="col-md-4 col-md-offset-0">
             <figure>
-              <img v-bind:src="product.image">
+              <img class="product" v-bind:src="product.image">
             </figure>
+            </div>
+            <div class="col-md-6 col-md-offset-2 description">
+              <h1 v-text="product.title"></h1>
+              <p v-html="product.description"></p>
+              <p class="price">
+                {{product.price | formatPrice}}
+              </p>
+              <button class="btn btn-primary btn-lg"
+                v-on:click="addToCart"
+                v-if="canAddToCart">장바구니 담기</button>
+              <button disabled="true" class="btn btn-primary btn-lg"
+                v-else>장바구니 담기</button>
+                  <!-- 2022.10.24 -->
+                  <!-- [01.] v-if를 사용해 상품의 재고 수량에 따라 서로 다른 텍스트를 출력해보자 -->
+                  <span class="inventory-message"
+                  v-if="product.availableInventory - cartItemCount === 0">
+                  품절!!!
+                  <!-- [02.] 이는 computed 속성에서 좀 더 간단하게 구현할 수 있음.-->
+                  </span>
+
+                  <span class="inventory-message"
+                  v-else-if="product.availableInventory - cartItemCount < 5">
+                  {{product.availableInventory - cartItemCount}} 개 남았습니다!!
+                  </span>
+
+                  <span class="inventory-message"
+                  v-else> <!-- [01.] v-else는 조건이 따로 필요 없음-->
+                  지금 바로 구매하세요!
+                  </span>
+
+                  <!-- 별점을 추가해보자-->
+                  <div class="rating">
+                    <!-- 아래와 같이 사용해도 되지만 이보다 더 좋은 방법이 있음.
+                    <span>☆</span>
+                    <span>☆</span>
+                    <span>☆</span>
+                    <span>☆</span>
+                    <span>☆</span> -->
+
+                    <!-- <span v-for="n in 5">☆</span> -->
+                    <!-- 위와 같이 for문에서 배열 대신 range를 사용할 경우
+                        "1" 부터 5까지 숫자 배열을 만들어 변수 n에 차례대로 선언하며
+                        선언 할 때 마다 해당 코드를 반복하여 실행함
+                        따라서, <span>☆</span>을 5번 반복하게 됨. -->
+                    <!-- 참고: v-for을 통해 반복을 사용하게 되면 위와 같이 <span>☆</span>이
+                          줄바꿈으로 인해 떨어지는 게 아닌 <span>☆</span><span>☆</span>... 처럼
+                          공백 없이 반복이 이루어지기 때문에, 실제 브라우저에서 보면 span 태그끼리
+                          다닥다닥 붙어있는 것을 확인할 수 있음.-->
+
+                    
+                    <span v-for="n in maxRating" v-bind:class="{'rating-active':checkRating(n, product)}">☆</span>
+                    <!--
+                      위의 코드를 풀어서 쓰면 아래와 같음.
+                        <span v-for="n in maxRating" v-bind:class="{'rating-active':true}">☆</span>
+                        <span v-for="n in maxRating" v-bind:class="{'rating-active':true}">☆</span>
+                        <span v-for="n in maxRating" v-bind:class="{'rating-active':true}">☆</span>
+                        <span v-for="n in maxRating" v-bind:class="{'rating-active':false}">☆</span>
+                        <span v-for="n in maxRating" v-bind:class="{'rating-active':false}">☆</span>
+                      5개의 별이 있고, 3/5 평점을 표현하려면 검정색 별이 표시되는 곳의
+                      클래스 속성 값이 true 상태가 되어야 함.
+                      즉, v-bind로 바인딩 된 클래스는 속성값이 true인 값은 표현되고,
+                      false인 값은 표시가 되지 않는 특징이 있고, 이를 for문을 이용해
+                      maxRating 만큼만 true 값을 표시하는 원리임.
+                      ...라고 하는데, 이건 조금 더 공부해야 알 듯. -->
+
+                    <!-- css 파일에 들어가보면 아래와 같은 속성을 볼 수 있음. -->
+                    <!--
+                      .rating-active:before {
+                        content: "\2605";
+                        position: absolute;
+                      } -->
+                    <!-- content 속성으로 2605번 유니코드 글자(★)를 출력하며, 
+                        position 속성으로 absolute 를 사용해 먼저 쓰여진 span 태그 위에
+                        겹쳐서 새로운 글자를 입력할 수 있음.
+                        따라서 흰색 별이 보이지 않고 검은색 별의 일부만 볼 수 있음.-->
+                    <!-- 이러한 속성으로 Vue 객체 속 data에 저장되어 있는 -->
+                  </div>
+            </div>
           </div>
-          <div class="col-md-6 col-md-offset-2 description">
-            <h1 v-text="product.title"></h1>
-            <p v-html="product.description"></p>
-            <p class="price">
-              {{product.price | formatPrice}}
-            </p>
-            <button class="btn btn-primary btn-lg"
-              v-on:click="addToCart"
-              v-if="canAddToCart">장바구니 담기</button>
-            <button disabled="true" class="btn btn-primary btn-lg"
-              v-else>장바구니 담기</button>
-                <!-- 2022.10.24 -->
-                <!-- v-if를 사용해 상품의 재고 수량에 따라 서로 다른 텍스트를 출력해보자 -->
-                <span class="inventory-message"
-                v-if="product.availableInventory - cartItemCount === 0">
-                품절!!!
-                <!-- 이는 computed 속성에서 좀 더 간단하게 구현할 수 있음.-->
-                </span>
-
-                <span class="inventory-message"
-                v-else-if="product.availableInventory - cartItemCount < 5">
-                {{product.availableInventory - cartItemCount}} 개 남았습니다!!
-                </span>
-
-                <span class="inventory-message"
-                v-else> <!-- v-else는 조건이 따로 필요 없음-->
-                지금 바로 구매하세요!
-                </span>
-
-                <!-- 별점을 추가해보자-->
-                <div class="rating">
-                  <!-- 아래와 같이 사용해도 되지만 이보다 더 좋은 방법이 있음.
-                  <span>☆</span>
-                  <span>☆</span>
-                  <span>☆</span>
-                  <span>☆</span>
-                  <span>☆</span> -->
-
-                  <!-- <span v-for="n in 5">☆</span> -->
-                  <!-- 위와 같이 for문에서 배열 대신 range를 사용할 경우
-                      "1" 부터 5까지 숫자 배열을 만들어 변수 n에 차례대로 선언하며
-                      선언 할 때 마다 해당 코드를 반복하여 실행함
-                      따라서, <span>☆</span>을 5번 반복하게 됨. -->
-                  <!-- 참고: v-for을 통해 반복을 사용하게 되면 위와 같이 <span>☆</span>이
-                        줄바꿈으로 인해 떨어지는 게 아닌 <span>☆</span><span>☆</span>... 처럼
-                        공백 없이 반복이 이루어지기 때문에, 실제 브라우저에서 보면 span 태그끼리
-                        다닥다닥 붙어있는 것을 확인할 수 있음.-->
-
-                  
-                  <span v-for="n in maxRating" v-bind:class="{'rating-active':checkRating(n)}">☆</span>
-                  <!--
-                    위의 코드를 풀어서 쓰면 아래와 같음.
-                      <span v-for="n in maxRating" v-bind:class="{'rating-active':true}">☆</span>
-                      <span v-for="n in maxRating" v-bind:class="{'rating-active':true}">☆</span>
-                      <span v-for="n in maxRating" v-bind:class="{'rating-active':true}">☆</span>
-                      <span v-for="n in maxRating" v-bind:class="{'rating-active':false}">☆</span>
-                      <span v-for="n in maxRating" v-bind:class="{'rating-active':false}">☆</span>
-                    5개의 별이 있고, 3/5 평점을 표현하려면 검정색 별이 표시되는 곳의
-                    클래스 속성 값이 true 상태가 되어야 함.
-                    즉, v-bind로 바인딩 된 클래스는 속성값이 true인 값은 표현되고,
-                    false인 값은 표시가 되지 않는 특징이 있고, 이를 for문을 이용해
-                    maxRating 만큼만 true 값을 표시하는 원리임.
-                    ...라고 하는데, 이건 조금 더 공부해야 알 듯. -->
-
-                  <!-- css 파일에 들어가보면 아래와 같은 속성을 볼 수 있음. -->
-                  <!--
-                    .rating-active:before {
-                      content: "\2605";
-                      position: absolute;
-                    } -->
-                  <!-- content 속성으로 2605번 유니코드 글자(★)를 출력하며, 
-                      position 속성으로 absolute 를 사용해 먼저 쓰여진 span 태그 위에
-                      겹쳐서 새로운 글자를 입력할 수 있음.
-                      따라서 흰색 별이 보이지 않고 검은색 별의 일부만 볼 수 있음.-->
-                  <!-- 이러한 속성으로 Vue 객체 속 data에 저장되어 있는 -->
-                </div>
-
-          </div>
-        </div>
-        
+          <hr>
+        </div>     
       </div>
       <div v-else>
         <div class="col-md-10 col-md-offset-1">
@@ -247,9 +247,10 @@
         price: 2000,
         image: "assets/images/product-fullsize.png",
         availableInventory: 10,
-        rating: 3,
+        rating: 1,
       },
       // products 배열이 만들어졌으므로, 기존의 product 객체는 필요가 없음!
+
       cart: [],
       maxRating: 5,
       products: [
@@ -260,7 +261,7 @@
           "price": 2000,
           "image": "assets/images/product-fullsize.png",
           "availableInventory": 10,
-          "rating": 3,
+          "rating": 5,
         },
         {
           "id": 1002,
@@ -278,7 +279,7 @@
           "price": 999999,
           "image": "assets/images/laser-pointer.jpg",
           "availableInventory": 10,
-          "rating": 3,
+          "rating": 2,
         },
         {
           "id": 1004,
@@ -287,7 +288,7 @@
           "price": 100,
           "image": "assets/images/Mindy_Mouse_cat_toy.jpg",
           "availableInventory": 10,
-          "rating": 3,
+          "rating": 4,
         },
         {
           "id": 1005,
@@ -312,8 +313,8 @@
       submitForm() {
         alert('제출 완료');
       },
-      checkRating(n) {
-        return this.product.rating - n >= 0;
+      checkRating(n, product) {
+        return n <= product;
       }
     },
     computed: {
@@ -323,11 +324,11 @@
       canAddToCart() {
         return this.product.availableInventory > this.cartItemCount;
       },
-      // 매진 임박 알림 만들기
+      // [03.] 매진 임박 알림 만들기
       warnAvailableInventory() {
         return this.product.availableInventory - cartItemCount > 5;
       }
-      // 차이점이라면 computed에서는 무조건 this 키워드를 사용해야 하는 것.
+      // [03.] 차이점이라면 computed에서는 무조건 this 키워드를 사용해야 하는 것.
     },
     filters: {
       formatPrice(price) {
