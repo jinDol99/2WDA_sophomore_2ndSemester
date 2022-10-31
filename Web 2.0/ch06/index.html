@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- [01.]  한글 출력을 위해 UTF-8와 vue 스크립트를 가져옴-->
+</head>
+<body>
+    <div id="app">
+        <div>새로운 페이지</div>
+        <global-component name="홍길동"></global-component>
+        <!-- [10.] 해당 컴포넌트의 속성으로 미리 설정한 이름을 집어넣으면 {{}} 속에 값에 잘 표현됨.-->
+        <local-component></local-component>
+
+        <my-component :text="message"></my-component>
+        <!-- [11.] -->
+    </div>
+    <!-- <script src="myVue.js"></script> -->
+    <!-- [06.] 아래와 같이 HTML 내부에서 컴포넌트를 생성할 수 있지만, 하나의 .js 파일로 만들어서-->
+    <!--       위처럼 <script>와 src 속성을 이용해 외부 js파일을 불러오면 같은 효과를 볼 수 있음.-->
+    <!--       실제로는 이런 방식을 주로 사용하지만, 지금은 공부의 효율성을 위해 내부 컴포넌트 사용-->
+
+    <script>
+        Vue.component('global-component', {
+            template: `<div>{{name}}님 어서오세유</div>`,
+            props: ['name']
+            // [09.]    props 키워드를 사용해 특정 값을 불러올 수 있음.
+        });
+        // [04.] Vue.component 함수를 통해 전역 컴포넌트를 생성할 수 있음.
+        //      하나의 컴포넌트는 이름과 객체로 이루어져 있으며, 객체 안에서 template 키워드를 통해
+        //      HTML 태그 형식의 새로운 컴포넌트를 생성할 수 있음.
+
+        new Vue({
+            el: '#app',
+            // [03.]    div의 id가 "app"인 태그와 연동하는 el 객체
+            components: {
+                'local-component': {
+                    template: `<div>안녕, 지역 컴포넌트로부터</div>`,
+                },
+                // [07.]    지역 컴포넌트를 만들 수도 있으며, 이는 위 처럼 하나의 Vue 객체 내부에서
+                //          componets: 객체 안에서 만들 수 있음.
+                // [08.]    여기서 잠깐, 지역 컴포넌트와 전역 컴포넌트와 같은 이름을 사용하고, 해당
+                //          이름을 호출하면 우선 지역 컴포넌트를 불러오는 것이 규칙임.
+                //
+                //          또한, HTML 태그에서는 대소문자 구분을 하지 않음. 만약 대소문자 구분이 필요하다면
+                //          대문자를 "-소문자"으로 치환하여 사용되게끔 HTML5 기능이 있음.
+                //          즉, 'mycomp', 'myComp' 두 개의 컴포넌트를 만들었다고 가정하고, 이 두개를
+                //          <div> 태그 내부에 <mycomp>, <myComp> 두 개의 컴포넌트를 입력한다면
+                //          HTML5는 자동적으로 <mycomp>, <my-comp>으로 치환함.
+
+                'my-component': {
+                    template: `<div>안녕, {{text}}!</div>`,
+                    props: [`text`]
+                    // [10.]    template 에 수염 괄호를 사용해 text를 입력하고,
+                    //          props 에 text라는 이름을 
+                }
+            },
+            data() {
+                return {
+                    message: '부모 컴포넌트로부터!',
+                }
+            }
+            // [11.]    이런 식으로, 출력되는 메시지 값을 함수 형태로 만들어도 되고, 기존 data에 넣었던 것 처럼
+            //          객체 형식으로도 넣을 수 있음. 단, Vue 3.0 버전부터는 무조건 함수 형식만 사용 가능.
+            //          따라서 이제부터의 data는 무조건 함수 형태로 값을 return 하는 방식을 사용할 예정
+
+        });
+
+    </script>
+    <!-- [02.]  HTML은 위에서 부터 아래로 순차적으로 실행되기 때문에 <div id="app"> 다음에 <script> 태그를-->
+    <!-- 읽어들임. 따라서 <script> 태그를 <body> 맨 마지막에 위치함.-->
+</body>
+</html>
