@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <title>6.3.3장: 속성 검증</title>
+</head>
+<body>
+    <div id="app">
+        <my-component :num="myNumber" :obj="passedObject" :even="myNumber"></my-component>
+        <!-- [16.] 속성으로 :num을 입력하여 -->
+    </div>
+
+    <script>
+        const counter = {counter: 0};
+        const MyComponent = {
+            template: `<div>숫자: {{num}}<br/> 문자열: {{str}}<br/>객체속성: {{obj.message}}<br/>짝수: {{even}}</div>`,
+            
+            props: {
+                num: {
+                    type: Number,       // 자료형
+                    required: true,     // 필수항목
+                },
+                // [17.] props 안에 객체를 삽입하여...
+                str: {
+                    type: String,
+                    default: "안녕",    // [18.] 특별한 값이 없다면 해당 문자열을 출력
+                },
+                obj: {
+                    type: Object,
+                    default: ()=>{
+                        return { message: "객체 안녕"}
+                    }
+                },
+                // [19.] Object 형식의 경우, default 값을 무조건 함수 형식으로 작성해야 함.
+                //       위와 적었던 것과 마찬가지로 값이 없을 때( ()=> ) message의 문자열을 출력하는 의미.
+                //       또한 객체를 HTML과 바인딩 할 때는 {{obj.message}} 형식으로 사용할 수 없으며, 무조건 태그의 속성으로
+                //       :obj="passedObject"를 사용해야함.
+                even: {
+                    validator: (value) => {
+                        return (value % 2 === 0)
+                    }
+                }
+                
+            },
+            data() {
+                return {
+                    myNumber: 40,
+                }
+            }
+
+
+        };
+        
+
+        let webstore = new Vue({
+            el: "#app",
+            components: {'my-component': MyComponent},
+            data() {
+                return {
+                    myNumber: 43,
+                }
+            }
+        });
+    </script>
+</body>
+</html>
