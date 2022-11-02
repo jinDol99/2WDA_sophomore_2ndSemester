@@ -9,13 +9,13 @@ public class quiz221026_ringQueue {
         private int rear;       // 맨 끝 요소 커서. 즉, 새로운 요소가 들어갈 인덱스 값
         
         //  --- 생성자 --- //
-        public IntArrayQueue(int maxlen) {      // 새로운 큐를 생성
+        public IntArrayQueue(int maxlen) {
             num = front = rear = 0;
             capacity = maxlen;
             try {
                 que = new int[capacity];
-            } catch (OutOfMemoryError e) {      // 생성이 불가능한 에러를 발견할 경우
-                capacity = 0;                   // 큐의 용량을 0으로 설정하여 저장공간을 사용 불가능하게 만듦.
+            } catch (OutOfMemoryError e) {              // 생성이 불가능한 에러를 발견할 경우
+                capacity = 0;                           // 큐의 용량을 0으로 설정하여 저장공간을 사용 불가능하게 만듦.
             } finally {
                 System.out.println("배열의 개수가 " + capacity + "개인 큐 선언 완료");
             }
