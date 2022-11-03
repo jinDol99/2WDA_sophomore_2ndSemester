@@ -1,5 +1,3 @@
-import java.util.*;
-
 public class quiz221026_ringQueue {
     static class IntArrayQueue {
         private int[] que;      // 큐의 본체
@@ -16,8 +14,6 @@ public class quiz221026_ringQueue {
                 que = new int[capacity];
             } catch (OutOfMemoryError e) {              // 생성이 불가능한 에러를 발견할 경우
                 capacity = 0;                           // 큐의 용량을 0으로 설정하여 저장공간을 사용 불가능하게 만듦.
-            } finally {
-                System.out.println("배열의 개수가 " + capacity + "개인 큐 선언 완료");
             }
         }
 
@@ -65,13 +61,10 @@ public class quiz221026_ringQueue {
     }
     
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("인큐와 디큐를 반복할 횟수: ");
-        int loopLimit = sc.nextInt();   // 무한 반복을 막기 위해 반복 횟수와
+        int loopLimit = 100;            // 무한 반복을 막기 위해 반복 횟수와
         int loopCount = 1;              // 반복할 때마다의 count 값을 설정
 
         IntArrayQueue ringArr = new IntArrayQueue(20);
-        sc.close();                     // 배열의 크기가 20인 원형 큐 배열 생성
 
         while (true) {
             while(ringArr.isFull() == false) {                  // 배열이 꽉 찰때까지 1~100 사이의 난수 인큐 작업 반복
