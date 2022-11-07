@@ -1,0 +1,35 @@
+<!-- 7-6장(170p.) 비동기 컴포넌트 -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <title>7장</title>
+</head>
+<body>
+    <div id="app">
+        <book-component></book-component>
+    </div>
+    <script>
+        const BookComponent = function(resolve,reject) {
+            setTimeout(function() {
+                resolve({
+                    template: `
+                        <div>
+                            <h1>비동기 컴포넌트</h1>
+                        </div>
+                    `
+                });
+            }
+            , 1000 * 2);
+        }
+        new Vue({
+            el: '#app',
+            components: {
+                'book-component': BookComponent
+            },
+        })
+    </script>
+</body>
+</html>
