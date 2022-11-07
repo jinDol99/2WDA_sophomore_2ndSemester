@@ -1,0 +1,71 @@
+<!-- 7-4장(170p.). 동적 컴포넌트 -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <title>7장</title>
+</head>
+<body>
+    <div id="app">
+        <button @click="cycle">컴포넌트 변경하기</button><br/>
+        <component :is="currentView"></component>
+        <!-- [02.] currentVue와 바인딩된 컴포넌트를 body에 작성.
+                  이 때, 버튼을 클릭할 때 마다 컴포넌트가 변경되도록 cycle() 함수가 실행됨-->
+    </div>
+    <script>
+        const BookComponent = {
+            template: `
+            <div>
+                BookComponent
+            </div>
+            `,
+        };
+        const FormComponent = {
+            template: `
+            <div>
+                FormComponent
+            </div>
+            `,
+        };
+        const HeaderComponent = {
+            template: `
+            <div>
+                HeaderComponent
+            </div>
+            `,
+        };
+        // [01.] 컴포넌트를 3개를 만들고, 아래의 Vue 객체 속 components 객체와 같이
+        //       3개의 컴포넌트를 선언함
+        new Vue({
+            el: '#app',
+            components: {
+                'book-component': BookComponent,
+                'form-component': FormComponent,
+                'header-component': HeaderComponent,
+            },
+            data() {
+                return {
+                    currentView: BookComponent,
+                }
+            },
+            methods: {
+                cycle() {
+                    if(this.currentView == HeaderComponent) {
+                        this.currentView = BookComponent;
+                    } else {
+                        this.currentView = this.currentView === BookComponent
+                                            ? FormComponent : HeaderComponent
+                    }
+                }
+                // [03.] 컴포넌트를 전환하는 cycle() 함수. 즉, 현재 컴포넌트(currentView 변수)의 값이
+                //       HeaderComponent라면 BookComponent로 전환하고,
+                //       BookComponent라면 FormComponent로, 아니면 HeaderComponent로 전환하는 코드.
+                //       복잡하다면 if-else 문으로도 구현 가능.
+            },
+        })
+
+    </script>
+</body>
+</html>
