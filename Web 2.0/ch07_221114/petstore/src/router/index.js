@@ -34,6 +34,10 @@ export default new Router({
               component: EditProduct,
               props: true
           }
+          // children: 한 컴포넌트(페이지) 내부의 서브 컴포넌트(페이지)를 만들 때 사용하는 객체로,
+          // 이렇게 생성된 컴포넌트는 components/Product.vue의 <router-view> 태그에 보여지게 됨.
+          // 생성될 컴포넌트는 components/EditProduct.vue를 사용하려면 component 속성의 값으로
+          // 해당 파일의 이름을 입력하면 됨
       ]
     },
     {

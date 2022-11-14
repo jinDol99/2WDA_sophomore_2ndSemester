@@ -13,6 +13,8 @@
           tag="button" class="btn btn-default btn-lg" :to="{name: 'Form'}">
         <span class="glyphicon glyphicon-shopping-cart">{{cartItemCount}}</span> 체크아웃
       </router-link>
+      <!-- router-link 태그는 router/index.js 에서 export된 router 객체와 연결하는 태그. -->
+      <!-- active-class 속성은... -->
     </div>
   </div>
 </header>

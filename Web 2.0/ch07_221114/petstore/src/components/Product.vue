@@ -26,6 +26,7 @@ export default {
   data() {
     return {
       product: ''
+      // [02.] [01.]에서 가져온 데이터를 화면에 출력
     }
   },
   methods: {
@@ -37,6 +38,9 @@ export default {
     axios.get('/static/products.json')
     .then((response) => {
       this.product = response.data.products.filter(data => data.id == this.$route.params.id)[0];
+      // [01.] JSON 파일(static/products.json)에서 모든 데이터를 가져온 후 id값을 비교하여
+      // 현재 id와 같은 값만 필터링(filter) 해서 그 값을 배열에 저장한 후, 그 배열의 0번째 인덱스를
+      // 현재 product 객체에 저장. 이는 [02.] 에서 그대로 출력함
       this.product.image = '/' + this.product.image;
     });
   }
