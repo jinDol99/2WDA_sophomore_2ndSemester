@@ -1,6 +1,6 @@
 # petstore
 
-> A Vue.js Project
+> Petstore application for book
 
 ## Build Setup
 
