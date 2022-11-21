@@ -1,23 +1,23 @@
 <template>
-    <div class="head">
+    <div class="foot">
         <h1>{{ msg }}</h1>
     </div>
 </template>
   
 <script>
 export default {
-    name: 'header',
+    name: 'footer',
     data() {
         return {
-            msg: '헤더 TEST'
+            msg: '푸터 TEST'
         }
     }
 }
 </script>
 
 <style>
-.head {
-    background-color: #b4e0e1;
+.foot {
+    background-color: #454f50;
 }
 </style>
   
