@@ -6,7 +6,7 @@
   
 <script>
 export default {
-    name: 'footer',
+    name: 'footerPage',
     data() {
         return {
             msg: '푸터 TEST'

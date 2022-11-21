@@ -6,7 +6,7 @@
   
 <script>
 export default {
-    name: 'header',
+    name: 'headerPage',
     data() {
         return {
             msg: '헤더 TEST'
