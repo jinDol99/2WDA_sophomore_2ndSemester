@@ -22,7 +22,7 @@ export default {
     name: 'headerPage',
     data() {
         return {
-            msg: '헤더 TEST'
+            msg: '개인 포트폴리오 페이지 - 2101107 박진석'
         }
     }
 }
