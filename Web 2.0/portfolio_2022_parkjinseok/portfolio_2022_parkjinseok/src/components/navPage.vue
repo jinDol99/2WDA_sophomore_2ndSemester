@@ -13,7 +13,9 @@
 
 <template>
     <div class="nav">
-        <h1>{{ msg }}</h1>
+        <div class="navmenu"> {{menu01}} </div>
+        <div class="navmenu"> {{menu02}} </div>
+        <div class="navmenu"> {{menu03}} </div>
     </div>
 </template>
   
@@ -22,7 +24,9 @@ export default {
     name: 'navPage',
     data() {
         return {
-            msg: '네비게이션 테스트'
+            menu01: '소개',
+            menu02: '프로젝트',
+            menu03: '기술 스택',
         }
     }
 }
@@ -30,6 +34,14 @@ export default {
 
 <style>
 .nav {
-    background-color: #00bdbd;
+    background-color: green;
+    display: flex;
+    justify-content: center;
 }
+.navmenu {
+    background-color: yellow;
+    margin: 1%;
+}
+/* 자식 div 요소를 정렬하려면 부모 display 속성을 flex로하면 됨.
+참고 사이트: https://wooncloud.tistory.com/10*/
 </style>
