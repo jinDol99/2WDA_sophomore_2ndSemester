@@ -94,18 +94,41 @@ class BinTree<K, V> {
                 // 해당 오른쪽 노드에 가서 다시 값을 비교 (재귀함수)
         }
     }
+
+    private void printSubTree(Node node) {
+        if (node != null) {
+            printSubTree(node.left);
+            System.out.println(node.key + " " + node.data);
+            printSubTree(node.right);
+        }
+    }
+
+    public void print() {
+        printSubTree(root);
+    }
 }
+
+
 
 public class ch09_221130_binarySearchTree {
     public static void main(String[] args) {
         BinTree<Integer, String> tree = new BinTree<Integer, String>();
-        tree.addNode(1, "홍길동");
-        tree.addNode(2, "김철수");
-        tree.addNode(3, "이영희");
-        tree.addNode(4, "바둑이");
-        tree.addNode(5, "최민호");
+        tree.addNode(3, "홍길동");
+        tree.addNode(1, "김철수");
+        tree.addNode(2, "이영희");
+        tree.addNode(5, "바둑이");
+        tree.addNode(4, "남궁민수");
+        // key 값을 트리 정렬방식에 맞게 삽입하기 위해 일부러
+        // addNode의 key 값을 위와 같이 설정
 
         String result = tree.search(2);
         System.out.println(result);
+
+        System.out.println();
+
+        tree.print();
     }
 }
+
+// 38 페이지에 있는 print() 방식을 기존 중위 순회 방식에서
+// 망할 후위 순회 방식으로 출력되도록 변경해보자

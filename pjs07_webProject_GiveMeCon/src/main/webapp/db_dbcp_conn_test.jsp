@@ -29,5 +29,6 @@
 			con.close();
 	}
 %>
+<button onclick="history.back()">뒤로 가기</button>
 </body>
 </html>
