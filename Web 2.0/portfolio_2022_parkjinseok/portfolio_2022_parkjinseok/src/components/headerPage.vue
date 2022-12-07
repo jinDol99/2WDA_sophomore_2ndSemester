@@ -13,7 +13,7 @@
 
 <template>
     <div class="head">
-        <h1>{{ msg }}</h1>
+        <h1><b>{{ msg }}</b></h1>
     </div>
 </template>
   
@@ -22,7 +22,7 @@ export default {
     name: 'headerPage',
     data() {
         return {
-            msg: '개인 포트폴리오 페이지 - 2101107 박진석'
+            msg: '개인 포트폴리오 페이지'
         }
     }
 }
