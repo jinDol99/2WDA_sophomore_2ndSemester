@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%-- <%@ include file="/globalData.jsp" %> --%>
+<%@ include file="/globalData.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,19 +8,35 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1>마이쇼핑몰(PJS07) ver0.1</h1>
-<hr>
-<h2>MVC 패턴 적용, DAO, DTO, VD 활용, DBCP/서블릿/스프링 미적용</h2>
-<h3>JNDI, DBCP 구성 및 활용</h3>
 
-<ul>
-<%-- 	<li><a href="<%= beerViewDir %>/beer_r_drc.jsp">출력레코드갯수조정(R_DRC)</a>
-	<li><a href="<%= beerViewDir %>/beer_c.jsp">맥주정보입력(C)</a>
-	<li><a href=".getBeerList.be"> 정보조회(R, 페이징기능X)</a>
-	<li><a href=".updateBeerListDislay.be">정보수정</a>
-	<li><a href=".deleteBeerListDisplay.be">정보삭제</a> --%>
-	<li><a href="./db_dbcp_conn_test.jsp">DB 접속 테스트</a>
-</ul>
+<header>
+	<div style="background-color: LightSkyBlue">
+		<p> 헤더 테스트 </p>
+	</div>
+</header>
+<aside>
+	<div style="background-color:LightGreen">
+		<ul>
+			<li><a href="#">출력레코드갯수조정(R_DRC)</a>
+			<li><a href="<%= prdViewDir %>/prd_c.jsp">상품추가</a>
+			<li><a href="#">상품수정</a>
+			<li><a href="#">상품삭제</a>
+			<li><a href="<%= etcViewDir %>/db_dbcp_conn_test.jsp">DB 접속 테스트</a>
+		</ul>
+	</div>
+</aside>
+	
+<article>
+	<div style="background-color: LightYellow">
+		<p> 전체상품 출력용 아티클 </p>
+	</div>
+</article>
+<footer>
+	<div style="background-color: LightGrey">
+		<p> 푸터 테스트 </p>
+	</div>
+</footer>
+
 <%-- 
 <jsp:forward page="<%=beerViewDir %>/beer_c.jsp"/>
 
