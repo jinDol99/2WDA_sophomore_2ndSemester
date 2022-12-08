@@ -11,13 +11,12 @@
 
 <header>
 	<div style="background-color: LightSkyBlue">
-		<p> 헤더 테스트 </p>
+		<%@ include file="./com/yju/2wda/team2/view/member/header.jsp" %>
 	</div>
 </header>
 <aside>
 	<div style="background-color:LightGreen">
 		<ul>
-			<li><a href="#">출력레코드갯수조정(R_DRC)</a>
 			<li><a href="<%= prdViewDir %>/prd_c.jsp">상품추가</a>
 			<li><a href="#">상품수정</a>
 			<li><a href="#">상품삭제</a>

@@ -23,4 +23,14 @@
   	<servlet-name>prdController</servlet-name>
   	<url-pattern>*.pr</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>memController</servlet-name>
+  	<servlet-class>pjs07_mvc_gifti.controller.member.memFrontController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>memController</servlet-name>
+  	<url-pattern>*.mem</url-pattern>
+  </servlet-mapping>
+  
 </web-app>

@@ -20,6 +20,7 @@
 	static final String prdContDir = contDir + "/prd";
 	
 	static final String etcViewDir = viewDir + "/etc";
+	static final String memberViewDir = viewDir + "/member";
 %>
 </body>
 </html>
